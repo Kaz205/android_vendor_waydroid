@@ -1,0 +1,39 @@
+From 2b7306f7dcde945b74106a239367217307704bcc Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Fri, 17 May 2024 08:34:45 +0900
+Subject: [PATCH] Add GApps
+
+---
+ BoardConfig.mk | 2 ++
+ device.mk      | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index bd94b45..3168540 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -18,6 +18,8 @@ BOARD_VENDOR := waydroid
+ 
+ DEVICE_PATH := device/waydroid/waydroid
+ 
++BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
++
+ # Binder
+ TARGET_USES_64_BIT_BINDER := true
+ 
+diff --git a/device.mk b/device.mk
+index 56f2e46..2599c89 100644
+--- a/device.mk
++++ b/device.mk
+@@ -22,6 +22,8 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_p.mk)
+ $(call inherit-product-if-exists, vendor/lineage/config/common_full_tablet_wifionly.mk)
+ $(call inherit-product-if-exists, vendor/bliss/config/common_full_tablet_wifionly.mk)
+ 
++$(call inherit-product, vendor/gapps/x86_64/x86_64-vendor.mk)
++
+ # Audio HAL
+ PRODUCT_PACKAGES += \
+     android.hardware.audio@2.0-service \
+-- 
+2.45.1
+

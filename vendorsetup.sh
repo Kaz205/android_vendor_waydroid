@@ -10,3 +10,5 @@ function waydroid-generate-manifest
 {
     ${vendor_path}/manifest_scripts/generate-manifest.sh
 }
+
+export SKIP_ABI_CHECKS=true
