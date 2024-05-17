@@ -1,0 +1,27 @@
+From bfaee4c535da6e54a5d9e08833e04cffe67ef3a5 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Fri, 17 May 2024 17:38:54 +0900
+Subject: [PATCH] Add libndk
+
+---
+ device.mk | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/device.mk b/device.mk
+index ae3899b..fae14ca 100644
+--- a/device.mk
++++ b/device.mk
+@@ -215,3 +215,10 @@ endif
+ # Updater
+ PRODUCT_PACKAGES += \
+     WaydroidUpdater
++
++$(call inherit-product, vendor/google/proprietary/ndk_translation-prebuilt/libndk_translation.mk)
++$(call inherit-product, vendor/google/proprietary/ndk_translation-prebuilt/native_bridge_arm_on_x86.mk)
++PRODUCT_SYSTEM_DEFAULT_PROPERTIES += persist.sys.nativebridge=1
++PRODUCT_PROPERTY_OVERRIDES += ro.product.cpu.abilist=x86_64,x86,armeabi-v7a,armeabi,arm64-v8a \
++        ro.product.cpu.abilist32=x86,armeabi-v7a,armeabi \
++        ro.product.cpu.abilist64=x86_64,arm64-v8a
+-- 
+2.45.1
+

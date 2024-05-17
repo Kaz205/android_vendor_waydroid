@@ -1,0 +1,59 @@
+From 88580eb0400b36821bc8078899575dc8d9cb1de7 Mon Sep 17 00:00:00 2001
+From: vladsendrix <83285656+vladsendrix@users.noreply.github.com>
+Date: Fri, 31 Dec 2021 03:18:04 +0100
+Subject: [PATCH 2/2] PixelPropsUtils: Spoof Pixel XL for Google Photos
+
+ * Enables unlimited backup in Google Photos
+
+Change-Id: If0b8064c7cb633139ee7c30a7bf1a8543bcc9cad
+Signed-off-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+---
+ .../com/android/internal/util/PixelPropsUtils.java    | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/core/java/com/android/internal/util/PixelPropsUtils.java b/core/java/com/android/internal/util/PixelPropsUtils.java
+index 1681c8c3..c4d0fd1c 100644
+--- a/core/java/com/android/internal/util/PixelPropsUtils.java
++++ b/core/java/com/android/internal/util/PixelPropsUtils.java
+@@ -33,6 +33,7 @@ public class PixelPropsUtils {
+     private static final Map<String, Object> propsToChange;
+     private static final Map<String, Object> propsToChangeP6;
+     private static final Map<String, Object> propsToChangeP5;
++    private static final Map<String, Object> propsToChangeP1;
+     private static final Map<String, ArrayList<String>> propsToKeep;
+     private static final String[] extraPackagesToChange = {
+         "com.android.chrome",
+@@ -43,6 +44,9 @@ public class PixelPropsUtils {
+         "com.google.android.googlequicksearchbox",
+         "com.google.android.apps.inputmethod.latin"
+     };
++    private static final String[] packagesToChangeP1 = {
++         "com.google.android.apps.photos"
++    };
+     private static final String[] packagesToKeep = {
+         "com.google.android.GoogleCamera",
+         "com.google.android.GoogleCamera.Cameight",
+@@ -77,6 +81,11 @@ public class PixelPropsUtils {
+         propsToChangeP6.put("PRODUCT", "raven");
+         propsToChangeP6.put("MODEL", "Pixel 6 Pro");
+         propsToChangeP6.put("FINGERPRINT", "google/raven/raven:12/SQ1D.211205.017/7955197:user/release-keys");
++        propsToChangeP1 = new HashMap<>();
++        propsToChangeP1.put("DEVICE", "marlin");
++        propsToChangeP1.put("PRODUCT", "marlin");
++        propsToChangeP1.put("MODEL", "Pixel XL");
++        propsToChangeP1.put("FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys");
+     }
+ 
+     public static void setProps(String packageName) {
+@@ -88,6 +97,8 @@ public class PixelPropsUtils {
+             if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+             if (Arrays.asList(packagesToChangeP5).contains(packageName)) {
+                 propsToChange.putAll(propsToChangeP5);
++            } else if (Arrays.asList(packagesToChangeP1).contains(packageName)) {
++                propsToChange.putAll(propsToChangeP1);
+             } else {
+                 propsToChange.putAll(propsToChangeP6);
+             }
+-- 
+2.45.2
+

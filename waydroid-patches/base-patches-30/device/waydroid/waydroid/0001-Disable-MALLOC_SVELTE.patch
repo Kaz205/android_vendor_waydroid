@@ -1,0 +1,24 @@
+From 6a8968b751f44d09fe299c42be04bf7120bdaa25 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Sun, 23 Jun 2024 11:49:27 +0900
+Subject: [PATCH] Disable MALLOC_SVELTE
+
+Select jemalloc in bionic.
+---
+ BoardConfig.mk | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index e823e78..535069b 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -63,6 +63,3 @@ BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
+ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3547483648
+ BOARD_VENDORIMAGE_PARTITION_SIZE := 1547483648
+ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+-
+-# Disable scudo
+-MALLOC_SVELTE := true
+-- 
+2.45.2
+

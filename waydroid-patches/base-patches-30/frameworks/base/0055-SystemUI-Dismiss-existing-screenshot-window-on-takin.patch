@@ -1,0 +1,67 @@
+From 07d5b64c3ade79403c1fb7b425eddb7191947e10 Mon Sep 17 00:00:00 2001
+From: LibXZR <i@xzr.moe>
+Date: Fri, 8 Apr 2022 20:34:41 +0800
+Subject: [PATCH] SystemUI: Dismiss existing screenshot window on taking new
+ screenshot
+
+To make sure the windows won't appear in next screenshot.
+
+Change-Id: Ic065816cb1c808540a82383a7f24f1bce0dd6589
+Signed-off-by: LibXZR <i@xzr.moe>
+[ Backport to rvc ]
+Signed-off-by: Kazuki H <kazukih0205@gmail.com>
+---
+ .../systemui/screenshot/GlobalScreenshot.java | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java b/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
+index abd2d42f..ecdf525e 100644
+--- a/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
++++ b/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
+@@ -242,6 +242,8 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
+     // standard material ease
+     private final Interpolator mFastOutSlowIn;
+ 
++    private final FullScreenshotRunnable mFullScreenshotRunnable = new FullScreenshotRunnable();
++
+     private final Handler mScreenshotHandler = new Handler(Looper.getMainLooper()) {
+         @Override
+         public void handleMessage(Message msg) {
+@@ -380,7 +382,14 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
+ 
+     void takeScreenshotFullscreen(Consumer<Uri> finisher, Runnable onComplete) {
+         mOnCompleteRunnable = onComplete;
++        mScreenshotHandler.removeCallbacks(mFullScreenshotRunnable);
++        dismissScreenshot("new screenshot requested", true);
++        mFullScreenshotRunnable.setArgs(finisher, onComplete);
++        // Wait 50ms to make sure we are on new frame.
++        mScreenshotHandler.postDelayed(mFullScreenshotRunnable, 50);
++    }
+ 
++    void takeScreenshotFullscreenInternal(Consumer<Uri> finisher, Runnable onComplete) {
+         mDisplay.getRealMetrics(mDisplayMetrics);
+         takeScreenshotInternal(
+                 finisher,
+@@ -1309,4 +1318,19 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
+                 mContext.getResources().getBoolean(
+                         com.android.internal.R.bool.config_camera_sound_forced);
+     }
++
++    private class FullScreenshotRunnable implements Runnable {
++        Consumer<Uri> mFinisher;
++        Runnable mOnComplete;
++
++        public void setArgs(Consumer<Uri> finisher, Runnable onComplete) {
++            mFinisher = finisher;
++            mOnComplete = onComplete;
++        }
++
++        @Override
++        public void run() {
++            takeScreenshotFullscreenInternal(mFinisher, mOnComplete);
++        }
++    }
+ }
+-- 
+2.45.2
+
