@@ -1,0 +1,31 @@
+From 9db94a8cd7b4bd1abb9c21c7155ef94a273c2064 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Sat, 22 Jun 2024 20:23:15 +0900
+Subject: [PATCH] PixelPropsUtils: Only spoof GPhotos
+
+Change-Id: I112fcfbad9f0fae25fd4425cffef1c4e49f78169
+---
+ core/java/com/android/internal/util/PixelPropsUtils.java | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/core/java/com/android/internal/util/PixelPropsUtils.java b/core/java/com/android/internal/util/PixelPropsUtils.java
+index c4d0fd1c..e9d32776 100644
+--- a/core/java/com/android/internal/util/PixelPropsUtils.java
++++ b/core/java/com/android/internal/util/PixelPropsUtils.java
+@@ -95,12 +95,8 @@ public class PixelPropsUtils {
+         if ((packageName.startsWith("com.google.") && !Arrays.asList(packagesToKeep).contains(packageName))
+                 || Arrays.asList(extraPackagesToChange).contains(packageName)) {
+             if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+-            if (Arrays.asList(packagesToChangeP5).contains(packageName)) {
+-                propsToChange.putAll(propsToChangeP5);
+-            } else if (Arrays.asList(packagesToChangeP1).contains(packageName)) {
++            if (Arrays.asList(packagesToChangeP1).contains(packageName)) {
+                 propsToChange.putAll(propsToChangeP1);
+-            } else {
+-                propsToChange.putAll(propsToChangeP6);
+             }
+             for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
+                 String key = prop.getKey();
+-- 
+2.45.2
+

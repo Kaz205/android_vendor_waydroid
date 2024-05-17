@@ -1,0 +1,25 @@
+From 5cae3adf923e80ad0319c72ce24ffc161dbb6322 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Sat, 18 May 2024 16:27:49 +0900
+Subject: [PATCH] Don't abort when an unknown mke2fs option is set
+
+Change-Id: I000ce8147acc3053b00c9adca522caf06944e0de
+---
+ misc/mke2fs.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 879e3914..d7ae7901 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -1192,7 +1192,6 @@ static void edit_feature(const char *str, __u32 *compat_array)
+ 	if (e2p_edit_feature(str, compat_array, ok_features)) {
+ 		fprintf(stderr, _("Invalid filesystem option set: %s\n"),
+ 			str);
+-		exit(1);
+ 	}
+ }
+ 
+-- 
+2.45.1
+

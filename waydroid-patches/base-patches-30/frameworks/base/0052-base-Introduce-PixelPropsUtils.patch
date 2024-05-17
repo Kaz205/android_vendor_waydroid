@@ -1,0 +1,269 @@
+From f2a627e97a40cddfddb8fe2559fa054c5f244bdb Mon Sep 17 00:00:00 2001
+From: jhenrique09 <jhenrique09.mcz@hotmail.com>
+Date: Thu, 19 Nov 2020 20:46:32 -0300
+Subject: [PATCH 1/2] base: Introduce PixelPropsUtils
+
+That will spoof build fingerprints on some g00gle apps
+
+* Also will enable some cool stuffs like:
+  - Dynamic navbar on GBoard
+  - SafetyHub
+
+and others.
+
+Thanks to @kdrag0n for the original idea at https://github.com/ProtonAOSP/android_frameworks_base/commit/5a54bfd846c7a26ba4820a361a6fec779edf8c5a
+
+A12 Edition - also includes:
+PixelPropsUtils: Use Pixel 6 props
+PixelPropsUtils: Rewrite logic
+
+- Unlocks new smartspace in Pixel Launcher,
+  monet in gapps and more
+
+Squashed:
+
+commit a99982c18c7124a8baa2ea85573afb11ba09fa5b
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Thu Dec 23 21:33:19 2021 +0530
+
+    PixelPropsUtils: Use redfin props for some apps
+
+    Based on https://github.com/PixelExperience/frameworks_base/commit/700a05483c244fa39cf732b7c19f75bf81ad24a1
+
+    Co-authored-by: jhenrique09 <jhsv09@gmail.com>
+    Signed-off-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+
+commit 400155f3ca62bca66092a17ea47b781fbe414cf6
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Sun Dec 19 21:02:28 2021 +0530
+
+    PixelPropsUtils: Update raven fp from december release
+
+commit 780c1b64fd28c46cfd6248e51c019dd5f64ba8c5
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Sat Nov 27 16:53:23 2021 +0530
+
+    PixelPropsUtils: Avoid spoofing props for gcam and mods
+
+commit 73ce877f8cdec22c3c8ebe9180483b554daa0b6e
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Wed Nov 3 00:17:01 2021 +0530
+
+    PixelPropsUtils: Update raven fp from november release
+
+commit 305df6dc539dd71597a9bbb49ecdcf70af3b9c56
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Fri Oct 29 16:49:03 2021 +0530
+
+    PixelPropsUtils: Switch to raven release-keys fingerprint
+
+commit 276f9ce9771b3f95db386b026789b20221948fda
+Author: jhenrique09 <jhsv09@gmail.com>
+Date:   Sat Oct 16 12:18:09 2021 -0300
+
+    PixelPropsUtils: Set userdebug as Build.TYPE for GMS
+
+    Fixes force close on google apps
+
+    10-15 07:44:52.294  8041  8252 E AndroidRuntime: FATAL EXCEPTION: DG
+    10-15 07:44:52.294  8041  8252 E AndroidRuntime: Process: com.google.android.youtube, PID: 8041
+    10-15 07:44:52.294  8041  8252 E AndroidRuntime: java.lang.SecurityException: GoogleCertificatesRslt: Package signed with debug key (go/gsrlt)
+
+    [ghostrider-reborn]
+    - Use propsToKeep
+    - Move setting GMS-specific props out of for loop
+
+    Change-Id: Idb11a2f032ebe6d162363b0a644ad7ab6d37393a
+    Signed-off-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+
+commit dcdac09df7bae72253021957f15e2ee06c1a128f
+Author: Ratoriku <a1063021545@gmail.com>
+Date:   Sat Oct 23 18:01:56 2021 +0800
+
+    PixelPropsUtils: Add chrome stable into extra packages list
+
+    Signed-off-by: Ratoriku <a1063021545@gmail.com>
+    Change-Id: I09413e803287f00fbb56924edf6c73f9286d9cc7
+
+commit 36541ff8a52c23c06f5316a221f2f011df4d7236
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Thu Oct 28 00:33:25 2021 +0530
+
+    PixelPropsUtils: Drop raven fingerprint & spoof build type
+
+    Fixes google sign-in in various apps
+    Thanks to Subhajeet Muhuri <subhajeet.muhuri@gmail.com>
+
+commit 3875adf4828c46e30c08ddfd50cc88e00be141a9
+Author: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Date:   Sat Oct 23 00:28:53 2021 +0530
+
+    PixelPropsUtils: Use walleye fp for GMS
+
+     * required for passing safetynet
+
+Change-Id: I1078e7402833fec77edb751070c5144d08c85b6c
+Co-authored-by: Danny Lin <danny@kdrag0n.dev>
+Co-authored-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Signed-off-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+---
+ core/java/android/app/Instrumentation.java    |   3 +
+ .../internal/util/PixelPropsUtils.java        | 118 ++++++++++++++++++
+ 2 files changed, 121 insertions(+)
+ create mode 100644 core/java/com/android/internal/util/PixelPropsUtils.java
+
+diff --git a/core/java/android/app/Instrumentation.java b/core/java/android/app/Instrumentation.java
+index 721525d9..1b85e3dc 100644
+--- a/core/java/android/app/Instrumentation.java
++++ b/core/java/android/app/Instrumentation.java
+@@ -56,6 +56,7 @@ import android.view.Window;
+ import android.view.WindowManagerGlobal;
+ 
+ import com.android.internal.content.ReferrerIntent;
++import com.android.internal.util.PixelPropsUtils;
+ 
+ import java.io.File;
+ import java.lang.annotation.Retention;
+@@ -1157,6 +1158,7 @@ public class Instrumentation {
+         Application app = getFactory(context.getPackageName())
+                 .instantiateApplication(cl, className);
+         app.attach(context);
++        PixelPropsUtils.setProps(app.getPackageName());
+         return app;
+     }
+     
+@@ -1174,6 +1176,7 @@ public class Instrumentation {
+             ClassNotFoundException {
+         Application app = (Application)clazz.newInstance();
+         app.attach(context);
++        PixelPropsUtils.setProps(app.getPackageName());
+         return app;
+     }
+ 
+diff --git a/core/java/com/android/internal/util/PixelPropsUtils.java b/core/java/com/android/internal/util/PixelPropsUtils.java
+new file mode 100644
+index 00000000..1681c8c3
+--- /dev/null
++++ b/core/java/com/android/internal/util/PixelPropsUtils.java
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (C) 2020 The Pixel Experience Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.internal.util;
++
++import android.os.Build;
++import android.util.Log;
++
++import java.util.Arrays;
++import java.util.ArrayList;
++import java.lang.reflect.Field;
++import java.util.HashMap;
++import java.util.Map;
++
++public class PixelPropsUtils {
++
++    private static final String TAG = "PixelPropsUtils";
++    private static final boolean DEBUG = false;
++
++    private static final Map<String, Object> propsToChange;
++    private static final Map<String, Object> propsToChangeP6;
++    private static final Map<String, Object> propsToChangeP5;
++    private static final Map<String, ArrayList<String>> propsToKeep;
++    private static final String[] extraPackagesToChange = {
++        "com.android.chrome",
++        "com.android.vending"
++    };
++    private static final String[] packagesToChangeP5 = {
++        "com.google.android.tts",
++        "com.google.android.googlequicksearchbox",
++        "com.google.android.apps.inputmethod.latin"
++    };
++    private static final String[] packagesToKeep = {
++        "com.google.android.GoogleCamera",
++        "com.google.android.GoogleCamera.Cameight",
++        "com.google.android.GoogleCamera.Go",
++        "com.google.android.GoogleCamera.Urnyx",
++        "com.google.android.GoogleCameraAsp",
++        "com.google.android.GoogleCameraCVM",
++        "com.google.android.GoogleCameraEng",
++        "com.google.android.GoogleCameraEng2",
++        "com.google.android.MTCL83",
++        "com.google.android.UltraCVM",
++        "com.google.android.apps.cameralite"
++    };
++
++    static {
++        propsToKeep = new HashMap<>();
++        propsToChange = new HashMap<>();
++        propsToChange.put("BRAND", "google");
++        propsToChange.put("MANUFACTURER", "Google");
++        propsToChange.put("IS_DEBUGGABLE", false);
++        propsToChange.put("IS_ENG", false);
++        propsToChange.put("IS_USERDEBUG", false);
++        propsToChange.put("IS_USER", true);
++        propsToChange.put("TYPE", "user");
++        propsToChangeP5 = new HashMap<>();
++        propsToChangeP5.put("DEVICE", "redfin");
++        propsToChangeP5.put("PRODUCT", "redfin");
++        propsToChangeP5.put("MODEL", "Pixel 5");
++        propsToChangeP5.put("FINGERPRINT", "google/redfin/redfin:12/SQ1A.211205.008/7888514:user/release-keys");
++        propsToChangeP6 = new HashMap<>();
++        propsToChangeP6.put("DEVICE", "raven");
++        propsToChangeP6.put("PRODUCT", "raven");
++        propsToChangeP6.put("MODEL", "Pixel 6 Pro");
++        propsToChangeP6.put("FINGERPRINT", "google/raven/raven:12/SQ1D.211205.017/7955197:user/release-keys");
++    }
++
++    public static void setProps(String packageName) {
++        if (packageName == null){
++            return;
++        }
++        if ((packageName.startsWith("com.google.") && !Arrays.asList(packagesToKeep).contains(packageName))
++                || Arrays.asList(extraPackagesToChange).contains(packageName)) {
++            if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
++            if (Arrays.asList(packagesToChangeP5).contains(packageName)) {
++                propsToChange.putAll(propsToChangeP5);
++            } else {
++                propsToChange.putAll(propsToChangeP6);
++            }
++            for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
++                String key = prop.getKey();
++                Object value = prop.getValue();
++                if (propsToKeep.containsKey(packageName) && propsToKeep.get(packageName).contains(key)){
++                    if (DEBUG) Log.d(TAG, "Not defining " + key + " prop for: " + packageName);
++                    continue;
++                }
++                if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
++                setPropValue(key, value);
++            }
++        }
++    }
++
++    private static void setPropValue(String key, Object value){
++        try {
++            if (DEBUG) Log.d(TAG, "Defining prop " + key + " to " + value.toString());
++            Field field = Build.class.getDeclaredField(key);
++            field.setAccessible(true);
++            field.set(null, value);
++            field.setAccessible(false);
++        } catch (NoSuchFieldException | IllegalAccessException e) {
++            Log.e(TAG, "Failed to set prop " + key, e);
++        }
++    }
++}
+-- 
+2.45.2
+
