@@ -1,0 +1,44 @@
+From 62b1ae78d5bcd906090e2f0b9dd7eec0fdf416cc Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Wed, 26 Jun 2024 05:42:12 +0900
+Subject: [PATCH] GlobalScreenshot: Hide pointer when taking a screenshot
+
+TODO: Remember which pointer icon was being used.
+
+Change-Id: Ic4de53a543c761cffe79fcef8fce87ace747d105
+---
+ .../src/com/android/systemui/screenshot/GlobalScreenshot.java | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java b/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
+index ecdf525e..58d79f96 100644
+--- a/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
++++ b/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
+@@ -89,6 +89,8 @@ import android.widget.HorizontalScrollView;
+ import android.widget.ImageView;
+ import android.widget.LinearLayout;
+ import android.widget.Toast;
++import android.hardware.input.InputManager;
++import android.view.PointerIcon;
+ 
+ import com.android.internal.logging.UiEventLogger;
+ import com.android.internal.statusbar.IStatusBarService;
+@@ -384,6 +386,7 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
+         mOnCompleteRunnable = onComplete;
+         mScreenshotHandler.removeCallbacks(mFullScreenshotRunnable);
+         dismissScreenshot("new screenshot requested", true);
++        InputManager.getInstance().setPointerIconType(PointerIcon.TYPE_NULL);
+         mFullScreenshotRunnable.setArgs(finisher, onComplete);
+         // Wait 50ms to make sure we are on new frame.
+         mScreenshotHandler.postDelayed(mFullScreenshotRunnable, 50);
+@@ -394,6 +397,7 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
+         takeScreenshotInternal(
+                 finisher,
+                 new Rect(0, 0, mDisplayMetrics.widthPixels, mDisplayMetrics.heightPixels));
++        InputManager.getInstance().setPointerIconType(PointerIcon.TYPE_ARROW);
+     }
+ 
+     void handleImageAsScreenshot(Bitmap screenshot, Rect screenshotScreenBounds,
+-- 
+2.45.2
+
