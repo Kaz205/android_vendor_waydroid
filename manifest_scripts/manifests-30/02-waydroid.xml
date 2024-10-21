@@ -15,8 +15,8 @@
 
   <!-- Display -->
   <project path="external/jemalloc_new" name="Kaz205/android_external_jemalloc-new" remote="ghub" revision="lineage-18.1" />
-  <project path="external/mesa" name="Kaz205/android_external_mesa3d" remote="ghub" revision="refs/heads/lineage-18.1-mesa-23.3" />
-  <project path="external/libdrm" name="Kaz205/android_external_libdrm" remote="ghub" revision="refs/heads/lineage-18.1" />
+  <project path="external/mesa" name="WayDroid/android_external_mesa3d" remote="ghub" revision="refs/heads/lineage-18.1" />
+  <project path="external/libdrm" name="WayDroid/android_external_libdrm" remote="ghub" revision="refs/heads/lineage-18.1" />
   <project path="external/llvm-project" name="WayDroid/android_external_llvm-project" remote="ghub" revision="refs/heads/lineage-18.1"/>
   <project path="external/minigbm" name="WayDroid/android_external_minigbm" remote="ghub" revision="refs/heads/lineage-18.1"/>
 
