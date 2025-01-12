@@ -34,5 +34,5 @@
   <!-- VNDK -->
   <project path="prebuilts/vndk/v29" name="WayDroid/android_prebuilts_vndk_v29" groups="pdk" clone-depth="1" remote="ghub" revision="refs/heads/lineage-18.1" />
 
-  <project path="vendor/google/proprietary/ndk_translation-prebuilt" name="Kaz205/vendor_google_proprietary_ndk_translation-prebuilt" clone-depth="1" revision="chromeos_guybrush" remote="ghub" />
+  <project path="vendor/google/proprietary/ndk_translation-prebuilt" name="supremegamers/vendor_google_proprietary_ndk_translation-prebuilt" clone-depth="1" revision="chromeos_guybrush" remote="ghub" />
 </manifest>
