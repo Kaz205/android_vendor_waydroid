@@ -1,0 +1,36 @@
+From 65ce5559dbf854e0634d451e5823162e961b5302 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Fri, 10 Oct 2025 19:46:28 +0900
+Subject: [PATCH] Add mindthegapps
+
+---
+ BoardConfig.mk | 2 ++
+ device.mk      | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 9f7565c..7e24e63 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -18,6 +18,8 @@ BOARD_VENDOR := waydroid
+ 
+ DEVICE_PATH := device/waydroid/waydroid
+ 
++BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
++
+ # Binder
+ TARGET_USES_64_BIT_BINDER := true
+ 
+diff --git a/device.mk b/device.mk
+index 1001758..8de896f 100644
+--- a/device.mk
++++ b/device.mk
+@@ -237,3 +237,5 @@ endif
+ # Updater
+ PRODUCT_PACKAGES += \
+     WaydroidUpdater
++
++$(call inherit-product, vendor/gapps/x86_64/x86_64-vendor.mk)
+-- 
+2.51.0
+
