@@ -1,0 +1,26 @@
+From 00d48170ce7e1c18d56b9c352284d8df599c4a4c Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Sat, 20 Sep 2025 03:14:57 +0900
+Subject: [PATCH] Invoke screenshot corner timeout animation asap
+
+Change-Id: Iaebfa7e601082e8567f1511d0cc25c98c3e10904
+---
+ .../com/android/systemui/screenshot/ScreenshotController.java   | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java b/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
+index a47b6b4d332d..cddf0e109ebb 100644
+--- a/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
++++ b/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
+@@ -264,7 +264,7 @@ public class ScreenshotController {
+     // From WizardManagerHelper.java
+     private static final String SETTINGS_SECURE_USER_SETUP_COMPLETE = "user_setup_complete";
+ 
+-    private static final int SCREENSHOT_CORNER_DEFAULT_TIMEOUT_MILLIS = 6000;
++    private static final int SCREENSHOT_CORNER_DEFAULT_TIMEOUT_MILLIS = 0;
+ 
+     private final WindowContext mContext;
+     private final FeatureFlags mFlags;
+-- 
+2.51.0
+

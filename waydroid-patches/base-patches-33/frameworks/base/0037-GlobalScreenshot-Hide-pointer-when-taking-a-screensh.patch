@@ -1,0 +1,45 @@
+From 638bafe0a947e327de31e4a9ae5769691d5babf0 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Sat, 20 Sep 2025 01:06:23 +0900
+Subject: [PATCH] GlobalScreenshot: Hide pointer when taking a screenshot
+
+TODO: Remember which pointer icon was being used.
+
+Change-Id: Ic4de53a543c761cffe79fcef8fce87ace747d105
+---
+ .../android/systemui/screenshot/ScreenshotController.java    | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java b/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
+index c9f03d4a1df9..a47b6b4d332d 100644
+--- a/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
++++ b/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
+@@ -89,6 +89,8 @@ import android.widget.Toast;
+ import android.window.OnBackInvokedCallback;
+ import android.window.OnBackInvokedDispatcher;
+ import android.window.WindowContext;
++import android.hardware.input.InputManager;
++import android.view.PointerIcon;
+ 
+ import androidx.concurrent.futures.CallbackToFutureAdapter;
+ 
+@@ -594,6 +596,8 @@ public class ScreenshotController {
+         mCurrentRequestCallback = null;
+         mScreenshotHandler.cancelTimeout();
+ 	mScreenshotView.reset();
++
++	InputManager.getInstance().setPointerIconType(PointerIcon.TYPE_NULL);
+         mFullScreenshotRunnable.setArgs(topComponent, finisher, requestCallback);
+         // Wait 50ms to make sure we are on new frame.
+         mScreenshotHandler.postDelayed(mFullScreenshotRunnable, 50);
+@@ -603,6 +607,7 @@ public class ScreenshotController {
+             RequestCallback requestCallback) {
+         mCurrentRequestCallback = requestCallback;
+         takeScreenshotInternal(topComponent, finisher, getFullScreenRect());
++	InputManager.getInstance().setPointerIconType(PointerIcon.TYPE_ARROW);
+     }
+ 
+     @MainThread
+-- 
+2.51.0
+

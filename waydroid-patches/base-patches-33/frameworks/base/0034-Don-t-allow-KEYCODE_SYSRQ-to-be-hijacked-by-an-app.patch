@@ -1,0 +1,46 @@
+From 3adc95543622a6c7db8cbba5e79aa5d0d93c6512 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Fri, 19 Sep 2025 00:20:04 +0900
+Subject: [PATCH] Don't allow KEYCODE_SYSRQ to be hijacked by an app
+
+I use this key for taking screenshots, but some unity apps override
+this, resulting in the key doing absolutely nothing.
+
+https://github.com/aosp-mirror/platform_frameworks_base/commit/f698bf366eb6f0c5b0b0bac18dbd84ab96d15d33
+
+Change-Id: Id2427258dfa0dfe4a53313335c65e2d73da87ba0
+---
+ .../com/android/server/policy/PhoneWindowManager.java  | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/services/core/java/com/android/server/policy/PhoneWindowManager.java b/services/core/java/com/android/server/policy/PhoneWindowManager.java
+index 86f0e65a6c34..17fa707f4be8 100644
+--- a/services/core/java/com/android/server/policy/PhoneWindowManager.java
++++ b/services/core/java/com/android/server/policy/PhoneWindowManager.java
+@@ -3293,6 +3293,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
+         }
+ 
+         switch(keyCode) {
++            case KeyEvent.KEYCODE_SYSRQ:
++                if (down && repeatCount == 0) {
++                    interceptScreenshotChord(SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
++                }
++                return key_consumed;
+             case KeyEvent.KEYCODE_HOME:
+                 // First we always handle the home key here, so applications
+                 // can never break it, although if keyguard is on, we do let
+@@ -3827,11 +3832,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
+                     }
+                 }
+                 break;
+-            case KeyEvent.KEYCODE_SYSRQ:
+-                if (down && repeatCount == 0) {
+-                    interceptScreenshotChord(SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
+-                }
+-                return true;
+         }
+ 
+         return false;
+-- 
+2.51.0
+

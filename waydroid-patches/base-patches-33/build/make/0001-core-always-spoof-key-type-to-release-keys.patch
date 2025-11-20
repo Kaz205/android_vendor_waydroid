@@ -1,0 +1,41 @@
+From c8c3bce1b2edf5e4800c286450c26e474c99e0e5 Mon Sep 17 00:00:00 2001
+From: Juhyung Park <qkrwngud825@gmail.com>
+Date: Mon, 14 Feb 2022 21:11:14 +0900
+Subject: [PATCH] core: always spoof key type to release-keys
+
+Change-Id: I34703db46fe3560d0e85f3b720177f9d83138951
+Signed-off-by: Juhyung Park <qkrwngud825@gmail.com>
+---
+ core/sysprop.mk | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
+
+diff --git a/core/sysprop.mk b/core/sysprop.mk
+index 5ff93a13e..770d5e2c5 100644
+--- a/core/sysprop.mk
++++ b/core/sysprop.mk
+@@ -151,19 +151,12 @@ endef
+ # by the device implementer. Here, we are adding a mandatory tag that
+ # identifies the signing config of the build.
+ BUILD_VERSION_TAGS := $(BUILD_VERSION_TAGS)
+-ifeq ($(TARGET_BUILD_TYPE),debug)
+-  BUILD_VERSION_TAGS += debug
+-endif
++
+ # The "test-keys" tag marks builds signed with the old test keys,
+ # which are available in the SDK.  "dev-keys" marks builds signed with
+ # non-default dev keys (usually private keys from a vendor directory).
+-# Both of these tags will be removed and replaced with "release-keys"
+-# when the target-files is signed in a post-build step.
+-ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/make/target/product/security/testkey)
+-BUILD_KEYS := test-keys
+-else
+-BUILD_KEYS := dev-keys
+-endif
++# Those are hardcoded to "release-keys" to bypass root detection.
++BUILD_KEYS := release-keys
+ BUILD_VERSION_TAGS += $(BUILD_KEYS)
+ BUILD_VERSION_TAGS := $(subst $(space),$(comma),$(sort $(BUILD_VERSION_TAGS)))
+ 
+-- 
+2.51.0
+

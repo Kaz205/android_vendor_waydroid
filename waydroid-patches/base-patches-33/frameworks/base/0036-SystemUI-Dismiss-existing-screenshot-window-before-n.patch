@@ -1,0 +1,77 @@
+From 20ebf73f7d1dbd104a79445e4814d1c39eaa6202 Mon Sep 17 00:00:00 2001
+From: LibXZR <i@xzr.moe>
+Date: Fri, 8 Apr 2022 20:34:41 +0800
+Subject: [PATCH] SystemUI: Dismiss existing screenshot window before new
+
+To make sure the windows won't appear in next screenshot.
+
+Change-Id: Ic065816cb1c808540a82383a7f24f1bce0dd6589
+Signed-off-by: LibXZR <i@xzr.moe>
+[ Port to Android 13 ]
+[ Use mScreenshotHandler.cancelTimeout() mScreenshotView.reset() ]
+Signed-off-by: Kazuki H <kazukih0205@gmail.com>
+---
+ .../screenshot/ScreenshotController.java      | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java b/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
+index 8c8c2512f2a4..c9f03d4a1df9 100644
+--- a/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
++++ b/packages/SystemUI/src/com/android/systemui/screenshot/ScreenshotController.java
+@@ -301,6 +301,8 @@ public class ScreenshotController {
+         respondToBack();
+     };
+ 
++    private final FullScreenshotRunnable mFullScreenshotRunnable = new FullScreenshotRunnable();
++
+     private ScreenshotView mScreenshotView;
+     private final MessageContainerController mMessageContainerController;
+     private Bitmap mScreenBitmap;
+@@ -584,6 +586,21 @@ public class ScreenshotController {
+     void takeScreenshotFullscreen(ComponentName topComponent, Consumer<Uri> finisher,
+             RequestCallback requestCallback) {
+         Assert.isMainThread();
++        mScreenshotHandler.removeCallbacks(mFullScreenshotRunnable);
++        /**
++         * Do not let it run the finish callback, it'll reset the service
++         * connection and break the next screenshot.
++         */
++        mCurrentRequestCallback = null;
++        mScreenshotHandler.cancelTimeout();
++	mScreenshotView.reset();
++        mFullScreenshotRunnable.setArgs(topComponent, finisher, requestCallback);
++        // Wait 50ms to make sure we are on new frame.
++        mScreenshotHandler.postDelayed(mFullScreenshotRunnable, 50);
++    }
++
++    void takeScreenshotFullscreenInternal(ComponentName topComponent, Consumer<Uri> finisher,
++            RequestCallback requestCallback) {
+         mCurrentRequestCallback = requestCallback;
+         takeScreenshotInternal(topComponent, finisher, getFullScreenRect());
+     }
+@@ -1471,4 +1488,22 @@ public class ScreenshotController {
+             };
+         }
+     }
++
++    private class FullScreenshotRunnable implements Runnable {
++        ComponentName mTopComponent;
++        Consumer<Uri> mFinisher;
++        RequestCallback mRequestCallback;
++
++        public void setArgs(ComponentName topComponent, Consumer<Uri> finisher,
++                RequestCallback requestCallback) {
++            mTopComponent = topComponent;
++            mFinisher = finisher;
++            mRequestCallback = requestCallback;
++        }
++
++        @Override
++        public void run() {
++            takeScreenshotFullscreenInternal(mTopComponent, mFinisher, mRequestCallback);
++        }
++    }
+ }
+-- 
+2.51.0
+

@@ -1,0 +1,36 @@
+From 690c636da1f2290b4ab2b5da7990f34ae49465e1 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Sat, 20 Sep 2025 03:01:39 +0900
+Subject: [PATCH] Never show "Internal problem with your device" error
+
+When I spoof my device to user, I get this:
+"09-20 03:00:15.187   302   302 E Build   : Vendor interface is incompatible, error=1"
+
+Change-Id: Id592e20bcc232762ff4ddacb4729ccca51b0e2d6
+---
+ core/java/android/os/Build.java | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
+index cd6a30eb6f02..0ab0741921bd 100755
+--- a/core/java/android/os/Build.java
++++ b/core/java/android/os/Build.java
+@@ -1248,6 +1248,7 @@ public class Build {
+      * @hide
+      */
+     public static boolean isBuildConsistent() {
++	/*
+         // Don't care on eng builds.  Incremental build may trigger false negative.
+         if (!IS_USER) return true;
+ 
+@@ -1285,6 +1286,7 @@ public class Build {
+                 return false;
+             }
+         }
++	*/
+ 
+         /* TODO: Figure out issue with checks failing
+         if (!TextUtils.isEmpty(bootimage)) {
+-- 
+2.51.0
+

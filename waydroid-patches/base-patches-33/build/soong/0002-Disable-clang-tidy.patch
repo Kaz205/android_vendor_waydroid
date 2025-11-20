@@ -1,0 +1,32 @@
+From 40f8ae5dd0f0da7c1b7249b3c5e71aa677ef42b2 Mon Sep 17 00:00:00 2001
+From: Kazuki H <kazukih0205@gmail.com>
+Date: Fri, 17 May 2024 17:34:37 +0900
+Subject: [PATCH] Disable clang-tidy
+
+Change-Id: I2d93f84a6a903faf6ad10ca5576c15f47fb4e937
+---
+ cc/tidy.go | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cc/tidy.go b/cc/tidy.go
+index 750e9de..1eac9ef 100644
+--- a/cc/tidy.go
++++ b/cc/tidy.go
+@@ -74,12 +74,12 @@ func (tidy *tidyFeature) flags(ctx ModuleContext, flags Flags) Flags {
+ 	// If not explicitly disabled, set flags.Tidy to generate .tidy rules.
+ 	// Note that libraries and binaries will depend on .tidy files ONLY if
+ 	// the global WITH_TIDY or module 'tidy' property is true.
+-	flags.Tidy = true
++	flags.Tidy = false
+ 
+ 	// If explicitly enabled, by global default or local tidy property,
+ 	// set flags.NeedTidyFiles to make this module depend on .tidy files.
+ 	if ctx.Config().ClangTidy() || Bool(tidy.Properties.Tidy) {
+-		flags.NeedTidyFiles = true
++		flags.NeedTidyFiles = false
+ 	}
+ 
+ 	// Add global WITH_TIDY_FLAGS and local tidy_flags.
+-- 
+2.49.0
+
